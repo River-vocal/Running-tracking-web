@@ -1,0 +1,95 @@
+{% extends 'joggerlogger/base.html' %}
+{% block content %}
+    <h1 class="text-center">{{ team.name }}</h1>
+    {% if message %}
+        <p class="error_message">{{message}}</p>
+    {% endif %}
+
+    <div>
+        <form method="post" action="{% url 'team_set_profile' team.id %}">
+            <h5>Team Name:</h5>
+            <div class="input-group mb-3 pl-5 pr-5">
+                {% csrf_token %}
+                <textarea class="form-control" placeholder="{{ team.name }}" name="name" aria-describedby="basic-addon1"></textarea>
+            </div>
+            <h5>Slogan:</h5>
+            <div class="input-group mb-3 pl-5 pr-5">
+                {% csrf_token %}
+                <textarea class="form-control" placeholder="{{ team.slogan }}" name="slogan" aria-describedby="basic-addon1"></textarea>
+            </div>
+            <h5> <br> Weekly goal: </h5>
+            <div class="input-group mb-3 pl-5 pr-5">
+                {% csrf_token %}
+                <textarea class="form-control" placeholder="{{ team.goal }}" name="team_goal" aria-describedby="basic-addon1"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Set</button>
+            </div>
+        </form>
+
+        <br> <br>
+        <h5>Coach:</h5> <span> <a href="{% url 'profile' team.coach.user.username %}">{{ team.coach.user.first_name }} {{ team.coach.user.last_name }} </a> </span> <br> <br>
+
+        <br>
+        <div> <h5>Team members:</h5>
+            {% for runner in team.runners.all %}
+                <h6> <a href="{% url 'profile' runner.user.username %}"> {{ runner.user.first_name }} {{ runner.user.last_name }}  </a> </h6>
+
+                <div>Goal from the coach:
+                    <form method="post" action="{% url 'set_member_goal' runner.id %}">
+                        <div class="input-group mb-3 pl-5 pr-5">
+                            {% csrf_token %}
+                            <input type="text" class="form-control" placeholder="{{ runner.goal }}" name="runner_goal" aria-describedby="basic-addon1">
+                            <input type="hidden" name="team_id" value="{{ team.id }}">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Set</button>
+                        </div>
+                    </form>
+                </div> <br>
+
+            {% endfor %}
+        </div>
+
+        <br>
+        <div>
+            <h5>Search for Runners</h5>
+            <form method = "post" action = "{% url 'search' %}">
+                <div class="input-group mb-3 pl-5 pr-5">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" placeholder="Search by Last Name Here" name="last" aria-describedby="basic-addon1">
+                    <input type="hidden" name="team_id" value="{{ team.id }}">
+                </div>
+                <div class="modal-footer">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
+        </div>
+        {% if results %}
+            <h6>Last Name Match(es) found:</h6>
+            {% for e in results %}
+                <div>
+                    Runner: {{e.first_name}} {{e.last_name}}, Email: {{ e.email }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <br> <br>
+        <div>
+            <h5>Add A New Member</h5>
+            <form method = "post" action = "{% url 'add' %}">
+                <div class="input-group mb-3 pl-5 pr-5">
+                    {% csrf_token %}
+                    <input type="email" class="form-control" placeholder="Enter Email Here" name="email" aria-describedby="basic-addon1">
+                    <input type="hidden" name="team_id" value="{{ team.id }}">
+                </div>
+                <div class="modal-footer">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+{% endblock %}

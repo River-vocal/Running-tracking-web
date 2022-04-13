@@ -1,0 +1,23 @@
+{% extends 'joggerlogger/base.html' %}
+{% block content %}
+    {% load static %}
+    {% get_media_prefix as images_url %}
+    {% if results %}
+        {% for user, account in results %}
+        <div class='row' style="border-bottom: 1px solid white">
+            <div class='col-3'>
+		    <img class="profile_pic_sm" src="{% url 'get_photo' user.username  %}"></img>
+            </div>
+            <div class='col-9 m-auto'>
+                <h4>{{user.username}}</h4>
+                <p>{{user.first_name}} {{user.last_name}}</p>
+                <p><a class="link" href="{% url 'profile' user.username %}">Profile</a> | <a class="link" href="{% url 'index_page' %}?user={{user.username}}">Calendar</a></p>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class='row' style="border-bottom: 1px solid white">
+            <h3 class="m-auto pb-5">No results found</h3>
+        </div>
+    {% endif %}
+{% endblock %}

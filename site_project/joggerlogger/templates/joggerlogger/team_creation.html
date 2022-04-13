@@ -1,0 +1,37 @@
+{% extends 'joggerlogger/base.html' %}
+{% block content %}
+    <h1 class="text-center">New Team</h1>
+
+    {% if message %}
+        <p class="error_message">{{message}}</p>
+    {% endif %}
+    <form method="post" action="{% url 'team_creation' %}">
+
+        <div class="modal-header">
+            <h5 class="modal-title">New team</h5>
+        </div>
+        <div class="modal-body">
+            {% if message %}
+                <p class="error_message">{{message}}</p>
+            {% endif %}
+            <div class="input-group mb-3 pl-5 pr-5">
+                {% csrf_token %}
+                <input type="text" class="form-control" placeholder="Name" maxlength="13" name="name" aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3 pl-5 pr-5">
+                {% csrf_token %}
+                <textarea class="form-control" placeholder="Slogan" name="slogan" aria-describedby="basic-addon1"></textarea>
+            </div>
+            <div class="input-group mb-3 pl-5 pr-5">
+                {% csrf_token %}
+                <input type="text" class="form-control" placeholder="Weekly goal" name="goal" aria-describedby="basic-addon1">
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+
+    </form>
+
+{% endblock %}

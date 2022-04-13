@@ -1,0 +1,128 @@
+{% extends 'joggerlogger/base.html' %}
+{% block content %}
+    <style type="text/css">
+        #map {
+          height: 400px;
+          /* The height is 400 pixels */
+          width: 100%;
+          /* The width is the width of the web page */
+        }
+    </style>
+    
+    <h1 class="text-center">Run Logs</h1>
+    <body>
+         <!-- https://stackoverflow.com/questions/8683922/how-can-i-pass-my-context-variables-to-a-javascript-file-in-django -->
+        <script>
+           var username = '{{ user_cur | escapejs }}';
+           var run_id = '{{ run_id | escapejs }}';
+           var locs = "{{lat_long_json | escapejs}}";
+           // https://stackoverflow.com/questions/45133863/how-to-parse-a-string-which-is-a-list-of-ints-into-a-list-in-javascript/45133909
+           locs = locs.substring(2, locs.length - 2); // cut out the brackets 
+           var locs_list = locs.split("], [");
+           var main_arr = [];
+           var i;
+           for (i = 0; i < locs_list.length; i++) {
+              var tuple = locs_list[i].split(", ");
+              var lat = parseFloat(tuple[0].substring(1, tuple[0].length - 1));
+              var lng = parseFloat(tuple[1].substring(1, tuple[1].length - 1));
+              var subarray = [];
+              subarray.push(lat);
+              subarray.push(lng);
+              main_arr.push(subarray);
+           }
+        //https://developers.google.com/maps/documentation/javascript/adding-a-google-map
+        </script>
+        <script type="text/javascript">
+            function initMap(user) {
+                const schenley = { lat: 40.4378546, lng: -79.9486486 };
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 15,
+                    center: schenley,
+                });
+                var i;
+                for (i = 0; i < main_arr.length; i++) {
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(main_arr[i][0], main_arr[i][1]),
+                        map: map,
+                    });
+                }
+                map.addListener("click", (e) => {
+                    placeMarker(e.latLng, map, user);
+                });
+                }
+
+            function placeMarker(latLng, map, user) {
+                var marker = new google.maps.Marker({
+                    position: latLng,
+                    map: map,
+                });
+                map.panTo(latLng);
+                marker.addListener("click", () => {
+                    // console.log("clicked on marker");
+                    marker.setMap(null);
+                    let request = new XMLHttpRequest();
+                    request.open("POST", "/del_run_logging", true);
+                    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    var full_str = "del coords".concat("&lat=",latLng.lat(),"&lng=",latLng.lng(),"&csrfmiddlewaretoken=",getCSRFToken(),"&user=",username,"&run_id=",run_id);
+                    request.send("content=" + full_str);
+                    return;
+                });
+                // create a request and send back the newest coordinates back to the server
+                let request = new XMLHttpRequest();
+                request.open("POST", "/add_run_logging", true);
+                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                var full_str = "new coords".concat("&lat=",latLng.lat(),"&lng=",latLng.lng(),"&csrfmiddlewaretoken=",getCSRFToken(),"&user=",username,"&run_id=",run_id);
+                request.send("content=" + full_str);
+            }
+
+            function getCSRFToken() {
+                let cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    let c = cookies[i].trim();
+                    if (c.startsWith("csrftoken=")) {
+                        return c.substring("csrftoken=".length, c.length);
+                    }
+                }
+                return "unknown";
+            }
+        </script>
+    </body>
+    
+    {% if no_runs %}
+        <div>
+            
+            <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+            <h3> Add some runs in the calendar to see runs! </h3><br>
+        </div>
+    {% else %}
+        <div>
+            <h3> {{ run_u.title }}:</h3><br>
+            <div id="map"></div>
+
+            <script
+              src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap&libraries=&v=weekly"
+              async
+            ></script>
+            
+            <span> Date: {{ run_u.date }} </span><br>
+            <span> Distance: {{ run_u.distance }} miles</span><br>
+            <span> Run time: {{ run_u.duration }} minutes</span><br>
+        </div>
+
+        {% if left %}
+            <a href="{% url 'run_logging' run_id=prev_run %}" style="text-align:center">Previous: {{ prev_run_date }}</a>
+        {% endif %}
+        <br>
+        {% if right %}
+            <p>
+            <a href="{% url 'run_logging' run_id=next_run %}" style="text-align:center">Next: {{ next_run_date }}</a>
+        {% endif %}
+        <br>
+        <form method="get" action="{% url 'run_search_action' %}" class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" name='search' type="search" placeholder="Search for Run" aria-label="Search">
+            <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        <br>
+        <div class='row' style="border-bottom: 1px solid white">
+    {% endif %}
+{% endblock %}

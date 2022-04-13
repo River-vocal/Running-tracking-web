@@ -1,0 +1,59 @@
+{% extends 'joggerlogger/base.html' %}
+{% block content %}
+    <div class="row">
+        <div class="col-3"><span></span></div>
+        <div id="login-div" class="col-6">
+        <form id="register_form" method="post" action="{% url 'register_page' %}">
+            <h2>Register</h2>
+            <br>
+            {% if message %}
+                <p class="error_message">{{message}}</p>
+            {% endif %}
+            <div class="input-group mb-3 pl-5 pr-5">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-file-person"></i></span>
+                </div>
+                <input name="username" type="text" class="form-control" placeholder="Username">
+            </div>
+            <div class="input-group mb-3 pl-5 pr-5">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-asterisk"></i></span>
+                </div>
+                <input name="password1" type="password" class="form-control" placeholder="Password">
+            </div>
+            <div class="input-group mb-3 pl-5 pr-5">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-asterisk"></i></span>
+                </div>
+                <input name="password2" type="password" class="form-control" placeholder="Password Confirm">
+            </div>
+            <div class="input-group mb-3 pl-5 pr-5">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
+                </div>
+                <input name="email" type="email" class="form-control" placeholder="Email">
+            </div>
+            <div class="input-group mb-3 pl-5 pr-5">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
+                </div>
+                <input name="first_name" type="text" class="form-control" placeholder="First Name">
+            </div>
+            <div class="input-group mb-3 pl-5 pr-5">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-person-fill"></i></span>
+                </div>
+                <input name="last_name" type="text" class="form-control" placeholder="Last Name">
+            </div>
+            <div class="input-group mb-3 p-3">
+                <div class="col-3"><span></span></div>
+                <div class="text-center col-6">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">Register</button>
+                </div>
+            </div>
+            <p class="text-white">Already have an account? Login <a href="{% url "login_page" %}">here</a><p>
+        </form>
+        </div>
+    </div>
+{% endblock %}

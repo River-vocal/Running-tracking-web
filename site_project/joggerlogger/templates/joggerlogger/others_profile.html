@@ -1,0 +1,62 @@
+{% extends 'joggerlogger/base.html' %}
+{% block content %}
+
+<p class="error_message">{{message}}</p>
+
+<div class="row">
+    <div class="col-8">
+    <h1 class="text-left">{{name}}</h1>
+    </div>
+    <div class="text-right col-4">
+        <a class="nav-link" href="{% url 'index_page' %}">View Calendar</a>
+    </div>
+</div>
+<div class="row pb-3 pt-3" style="border-top: 1px solid white">
+    <div class="col-4">
+        <div class="text-center">
+                {% csrf_token %}
+                <img src="{% url 'get_photo' account.user.username%}" alt="{{name}}" width= 45% class="img-thumbnail">
+        </div>
+    </div>
+    <div class="col-8">
+        <h5>Stats</h5>
+        <ul>
+            <li>Weekly milage: {{stats0}}</li>
+            <li>Total milage:  {{stats1}}</li>
+            <li>Furthest run:  {{stats2}}</li>
+        </ul>
+    </div>
+</div>
+
+<div>
+    <h5> <br> Personal Goal: </h5>
+    <div>
+        {% csrf_token %}
+        <div class="form-control" name="goal" aria-describedby="basic-addon1">{{account.goal}}</div>
+    </div>
+</div>
+
+<div>
+    <h5> <br> Goals From Teams: </h5>
+    {%for goal in goals%}
+    <h6><br> Goal From <a href="{% url 'team_detail' goal.team.id %}" class="font-weight-bold"> {{goal.team.name}}: </a>  </h6>
+    <div class="text-center">
+        {% csrf_token %}
+        {{goal.goal}}
+    </div>
+    {% endfor %}
+</div>
+   
+
+<div>
+    <h5> <br> {{account.user.first_name}} {{account.user.last_name}}'s Teams </h5>
+    {% for my_team in my_teams %}
+    <div>
+        <h6>
+            <a href="{% url 'team_detail' my_team.id %}" class="font-weight-bold"> {{my_team.name}} </a> 
+        </h6>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

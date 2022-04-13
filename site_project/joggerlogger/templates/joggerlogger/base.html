@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Jogger Logger</title>
+        {% load static %}
+
+        <link rel="stylesheet" href="{% static "joggerlogger/global.css" %}">
+        <link rel="stylesheet" href="{% static "joggerlogger/login.css" %}">
+
+        <!-- Font awesome -->
+        <script src="https://kit.fontawesome.com/174e041f8b.js" crossorigin="anonymous"></script>
+
+        <!-- jQuery cdn -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- Bootstrap cdn -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <!-- JavaScript Bundle with Popper -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+        <!-- Fullcalendar.io cdn -->
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.6.0/main.min.css">
+    </head>
+    <body class="bg-dark">
+
+        <nav id="header" class="navbar navbar-expand-lg text-white bg-dark pl-5 ">
+            <h1 id="site-name" class="mr-4">Jogger Logger</h1>
+                {% if user.is_authenticated %}
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Navigation
+                            </a>
+                            <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="nav-link" href="{% url 'index_page' %}">Calendar</a>
+                                <a class="nav-link" href="{% url 'run_logging' run_id=0 %}">Logs</a>
+                                <a class="nav-link" href="{% url 'team_hall' %}">Team Hall</a>
+                                <a class="nav-link" href="{% url 'profile' user.username %}">Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="nav-link bordered" href="{% url 'logout' %}">Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+                <form method="get" action="{% url 'account_search' %}" class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" name='search' type="search" placeholder="Search for User" aria-label="Search">
+                    <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+                </form>
+                {% endif %}
+        </nav>
+        <div id="main" class="text-white bg-dark container">
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>

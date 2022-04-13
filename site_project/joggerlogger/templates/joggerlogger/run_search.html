@@ -1,0 +1,16 @@
+{% extends 'joggerlogger/base.html' %}
+{% block content %}
+	<h3>Search Results for "{{ search }}":</h3>
+	<br>
+	{% for run, index in selected_runs %}
+		<span class="border border-primary">
+			<!-- <div class="container"> -->
+			
+				<a href="{% url 'run_logging' run_id=index %}" style="font-size: large;">{{run.date}}: {{ run.title }}</a>
+				<br>
+			
+			<!-- </div> -->
+		</span>
+	{% endfor %}
+	<div class='row' style="border-bottom: 1px solid white"></div>
+{% endblock %}

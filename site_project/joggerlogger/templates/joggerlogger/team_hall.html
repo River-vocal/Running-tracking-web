@@ -1,0 +1,20 @@
+{% extends 'joggerlogger/base.html' %}
+{% block content %}
+    <h1 class="text-center">Team Hall</h1>
+
+    
+    {% for team in teams %}
+
+        <div>
+            <h3>{{ team.name }}</h3>
+            <span> Coach: {{ team.coach.user.first_name }} {{ team.coach.user.last_name }}</span><br>
+            <span> Team members: {{ team.runners.count }} </span><br>
+            <a href="{% url 'team_detail' team.id %}" class="font-weight-bold"> details here </a>
+        </div>
+
+    {% endfor %}
+
+    <p class="font-italic"> <br><br> Haven't found an interesting team? Want to be a coach?
+        Create your <a href="{% url 'team_creation' %}">new team</a><p>
+
+{% endblock %}

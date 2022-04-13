@@ -1,0 +1,33 @@
+{% extends 'joggerlogger/base.html' %}
+{% block content %}
+    <h1 class="text-center">{{ team.name }}</h1>
+
+    {% if message %}
+        <p class="error_message">{{message}}</p>
+    {% endif %}
+    <div>
+
+        <h5>Slogan:</h5> <span> {{ team.slogan }} </span> <br> <br>
+        <h5>Coach:</h5> <span> <a href="{% url 'profile' team.coach.user.username%}">{{ team.coach.user.first_name }} {{ team.coach.user.last_name }} </a> </span> <br> <br>
+         <div> <h5>Team members:</h5>
+            {% for runner in team.runners.all %}
+                <h6> <a href="{% url 'profile' runner.user.username%}"> {{ runner.user.first_name }} {{ runner.user.last_name }}  </a> </h6>
+                <div>Goal from the coach: {{ runner.goal }}</div> <br>
+            {% endfor %}
+        </div>
+        <h5> <br> Weekly goal: </h5> <span>{{ team.goal }} </span><br> <br>
+    </div>
+
+    {% if account in team.runners.all %}
+        <form action="{% url 'leave' team.id %}" method="POST">
+            <div><button type="submit" class="btn btn-primary">Leave Team</button></div>
+            {% csrf_token %}
+        </form>
+    {% else %}
+        <form action="{% url 'join' team.id %}" method="POST">
+            <div><button type="submit" class="btn btn-primary">Join Team</button></div>
+            {% csrf_token %}
+        </form>
+    {% endif %}
+
+{% endblock %}
