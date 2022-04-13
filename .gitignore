@@ -1,3 +1,13 @@
+# Custom ignores
+
+db.sqlite3
+site_project/joggerlogger/migrations/*
+site_project/joggerlogger/images/*
+site_project/collected_static/joggerlogger/api_key.txt
+site_project/joggerlogger/static/joggerlogger/api_key.txt
+site_project/site_project/secret_key.txt
+.idea
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,3 +137,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+./site_project/site_project/secret_key.txt
